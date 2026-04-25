@@ -66,6 +66,43 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+
+/*  FORCE TEXT COLOR FIX */
+html, body, [class*="css"]  {
+    color: #1f2933 !important;
+}
+
+/* Input label fix */
+label {
+    color: #1f2933 !important;
+    font-weight: 600;
+}
+
+/* Selectbox text */
+div[data-baseweb="select"] * {
+    color: #1f2933 !important;
+}
+
+/* Input text */
+input {
+    color: #1f2933 !important;
+}
+
+/* Placeholder */
+input::placeholder {
+    color: #6b7280 !important;
+}
+
+/* Dropdown menu */
+ul {
+    color: #1f2933 !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 # ===============================
 # HEADER (NO IMAGE ERROR)
 # ===============================
