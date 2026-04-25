@@ -206,18 +206,18 @@ if st.button("Predict Classes and Next-Year Risk"):
     # ===============================
     st.subheader("Strategic Recommendations")
 
-last_class = preds[-1]
+    last_class = preds[-1]
 
-profit_change = net_profit_3 - net_profit_1
-debt_change = total_debt_3 - total_debt_1
-wc_1 = current_assets_1 - short_debt_1
-wc_3 = current_assets_3 - short_debt_3
-wc_change = wc_3 - wc_1
+    profit_change = net_profit_3 - net_profit_1
+    debt_change = total_debt_3 - total_debt_1
+    wc_1 = current_assets_1 - short_debt_1
+    wc_3 = current_assets_3 - short_debt_3
+    wc_change = wc_3 - wc_1
 
-if last_class in ["A", "B"]:
-    st.success("✅ The company is financially stable, but it should maintain discipline to preserve or improve its class.")
+    if last_class in ["A", "B"]:
+        st.success("✅ The company is financially stable, but it should maintain discipline to preserve or improve its class.")
 
-    st.write("""
+        st.write("""
     **How to maintain or improve performance:**
     - Keep debt growth under control and avoid unnecessary borrowing.
     - Maintain positive profitability by protecting margins and controlling operating costs.
@@ -234,10 +234,10 @@ if last_class in ["A", "B"]:
     if wc_change < 0:
         st.info("Working capital has decreased. The company should strengthen liquidity to avoid future downgrades.")
 
-elif last_class == "C":
-    st.warning("⚠️ The company shows moderate financial risk. It should act before the situation deteriorates further.")
+    elif last_class == "C":
+        st.warning("⚠️ The company shows moderate financial risk. It should act before the situation deteriorates further.")
 
-    st.write("""
+        st.write("""
     **How to improve performance:**
     - Reduce leverage by limiting new debt and prioritising repayment of short-term obligations.
     - Improve profitability through cost reduction, pricing strategy, and more efficient operations.
@@ -245,10 +245,10 @@ elif last_class == "C":
     - Build a recovery plan with clear financial targets for the next year.
     """)
 
-elif last_class == "D":
-    st.error("🚨 The company is predicted as financially distressed. Immediate corrective action is recommended.")
+    elif last_class == "D":
+        st.error("🚨 The company is predicted as financially distressed. Immediate corrective action is recommended.")
 
-    st.write("""
+        st.write("""
     **Urgent actions to improve performance:**
     - Restructure or renegotiate debt to reduce short-term pressure.
     - Restore profitability by cutting non-essential costs and focusing on profitable activities.
