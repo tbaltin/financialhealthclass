@@ -140,22 +140,61 @@ def signed_log(x):
 # CATEGORY MAPS
 # ===============================
 ateco_map = {
+    "01-03 Agriculture, Forestry, Fishing": 4,
+    "05-09 Mining and Quarrying": 4,
     "10-33 Manufacturing": 2,
+    "35 Electricity, Gas, Steam": 4,
+    "36-39 Water Supply, Sewerage, Waste": 4,
     "41-43 Construction": 0,
-    "45-47 Wholesale Retail": 3,
-    "58-63 IT & Communication": 1,
-    "Other": 4
+    "45-47 Wholesale and Retail Trade": 3,
+    "49-53 Transportation and Storage": 4,
+    "55-56 Accommodation and Food Service": 4,
+    "58-63 Information and Communication": 1,
+    "64-66 Financial and Insurance Activities": 4,
+    "68 Real Estate Activities": 4,
+    "69-75 Professional, Scientific, Technical Activities": 4,
+    "77-82 Administrative and Support Services": 4,
+    "84 Public Administration": 4,
+    "85 Education": 4,
+    "86-88 Human Health and Social Work": 4,
+    "90-93 Arts, Entertainment, Recreation": 4,
+    "94-96 Other Service Activities": 4
 }
 
 legal_map = {
     "SRL": 0,
     "SPA": 1,
+    "SNC": 2,
+    "SAS": 2,
+    "Individual Company": 2,
+    "Cooperative": 2,
+    "Consortium": 2,
+    "Foundation": 2,
+    "Association": 2,
     "Other": 2
 }
 
 region_map = {
+    "Abruzzo": 2,
+    "Aosta Valley": 2,
+    "Apulia": 2,
+    "Basilicata": 2,
+    "Calabria": 2,
+    "Campania": 2,
+    "Emilia-Romagna": 2,
+    "Friuli-Venezia Giulia": 2,
     "Lazio": 0,
+    "Liguria": 2,
     "Lombardy": 1,
+    "Marche": 2,
+    "Molise": 2,
+    "Piedmont": 2,
+    "Sardinia": 2,
+    "Sicily": 2,
+    "Trentino-Alto Adige": 2,
+    "Tuscany": 2,
+    "Umbria": 2,
+    "Veneto": 2,
     "Other": 2
 }
 
