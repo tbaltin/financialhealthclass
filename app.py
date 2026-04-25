@@ -204,10 +204,55 @@ if st.button("Predict Classes and Next-Year Risk"):
     # ===============================
     # SIMPLE RECOMMENDATION
     # ===============================
-    if preds[-1] in ["C", "D"]:
-        st.warning("⚠️ Risk detected. Suggestions:")
-        st.write("- Reduce debt levels")
-        st.write("- Improve profitability")
-        st.write("- Increase liquidity (working capital)")
-    else:
-        st.success("✅ Company is financially stable. Maintain performance.")
+    st.subheader("Strategic Recommendations")
+
+last_class = preds[-1]
+
+profit_change = net_profit_3 - net_profit_1
+debt_change = total_debt_3 - total_debt_1
+wc_1 = current_assets_1 - short_debt_1
+wc_3 = current_assets_3 - short_debt_3
+wc_change = wc_3 - wc_1
+
+if last_class in ["A", "B"]:
+    st.success("✅ The company is financially stable, but it should maintain discipline to preserve or improve its class.")
+
+    st.write("""
+    **How to maintain or improve performance:**
+    - Keep debt growth under control and avoid unnecessary borrowing.
+    - Maintain positive profitability by protecting margins and controlling operating costs.
+    - Preserve strong working capital by improving cash collection and managing short-term liabilities.
+    - Monitor profitability, debt, and liquidity every quarter to detect early warning signals.
+    """)
+
+    if debt_change > 0:
+        st.info("Debt has increased over the three-year period. Even though the company is currently stable, rising debt should be monitored carefully.")
+
+    if profit_change < 0:
+        st.info("Profitability has weakened over the three-year period. The company should focus on margin improvement and cost control.")
+
+    if wc_change < 0:
+        st.info("Working capital has decreased. The company should strengthen liquidity to avoid future downgrades.")
+
+elif last_class == "C":
+    st.warning("⚠️ The company shows moderate financial risk. It should act before the situation deteriorates further.")
+
+    st.write("""
+    **How to improve performance:**
+    - Reduce leverage by limiting new debt and prioritising repayment of short-term obligations.
+    - Improve profitability through cost reduction, pricing strategy, and more efficient operations.
+    - Strengthen working capital by accelerating receivables collection and controlling inventories.
+    - Build a recovery plan with clear financial targets for the next year.
+    """)
+
+elif last_class == "D":
+    st.error("🚨 The company is predicted as financially distressed. Immediate corrective action is recommended.")
+
+    st.write("""
+    **Urgent actions to improve performance:**
+    - Restructure or renegotiate debt to reduce short-term pressure.
+    - Restore profitability by cutting non-essential costs and focusing on profitable activities.
+    - Improve liquidity by increasing cash reserves and reducing short-term liabilities.
+    - Consider capital injection, asset sales, or operational restructuring if financial pressure continues.
+    - Monitor the company monthly rather than yearly until risk indicators improve.
+    """)
