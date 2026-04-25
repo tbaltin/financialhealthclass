@@ -106,12 +106,18 @@ ul {
 # ===============================
 # HEADER (NO IMAGE ERROR)
 # ===============================
-st.markdown("""
-<div class="main-title">
-    <h1>expert.ai Financial Health System</h1>
-    <p>Predict company financial health and generate smart recommendations</p>
-</div>
-""", unsafe_allow_html=True)
+col_logo, col_title = st.columns([1, 5])
+
+with col_logo:
+    st.image("expertai_logo.png", width=160)
+
+with col_title:
+    st.markdown("""
+    <div class="main-title">
+        <h1>Financial Health System</h1>
+        <p>Predict company financial health and generate smart recommendations</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ===============================
 # LOAD MODEL
