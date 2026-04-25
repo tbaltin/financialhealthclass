@@ -30,11 +30,40 @@ def map_class(pred):
     return class_map.get(pred, pred)
 
 ateco_map = {
-    "Construction": 0,
-    "IT Services": 1,
-    "Manufacturing": 2,
-    "Retail": 3,
-    "Other": 4
+    # AGRICULTURE & MINING → OTHER
+    "01-03: Agriculture, Forestry, Fishing": 4,
+    "05-09: Mining and Quarrying": 4,
+
+    # CORE CATEGORIES
+    "10-33: Manufacturing": 2,
+    "41-43: Construction": 0,
+    "45-47: Wholesale and Retail Trade": 3,
+    "58-63: Information and Communication": 1,
+
+    # ENERGY / UTILITIES → OTHER
+    "35: Electricity, Gas, Steam": 4,
+    "36-39: Water Supply, Sewerage, Waste": 4,
+
+    # TRANSPORT / HOSPITALITY → OTHER
+    "49-53: Transportation and Storage": 4,
+    "55-56: Accommodation and Food Service": 4,
+
+    # FINANCE / REAL ESTATE → OTHER
+    "64-66: Financial and Insurance Activities": 4,
+    "68: Real Estate Activities": 4,
+
+    # PROFESSIONAL SERVICES → OTHER
+    "69-75: Professional, Scientific, Technical Activities": 4,
+    "77-82: Administrative and Support Services": 4,
+
+    # PUBLIC / EDUCATION / HEALTH → OTHER
+    "84: Public Administration": 4,
+    "85: Education": 4,
+    "86-88: Human Health and Social Work": 4,
+
+    # ARTS / OTHER SERVICES → OTHER
+    "90-93: Arts, Entertainment, Recreation": 4,
+    "94-96: Other Service Activities": 4
 }
 
 legal_form_map = {
