@@ -4,6 +4,108 @@ import numpy as np
 import joblib
 
 # ===============================
+# PAGE CONFIG
+# ===============================
+st.set_page_config(
+    page_title="Financial Health Predictor",
+    layout="wide"
+)
+
+# ===============================
+# CUSTOM STYLE
+# ===============================
+st.markdown("""
+<style>
+.stApp {
+    background: linear-gradient(135deg, #f7fbfc 0%, #eef7f8 45%, #ffffff 100%);
+    color: #1f2933;
+}
+
+.main-title {
+    background: linear-gradient(90deg, #23c7b7, #0c8fd3);
+    padding: 34px;
+    border-radius: 20px;
+    color: white;
+    margin-bottom: 28px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.10);
+}
+
+.main-title h1 {
+    margin: 0;
+    font-size: 44px;
+    font-weight: 800;
+}
+
+.main-title p {
+    font-size: 18px;
+    margin-top: 8px;
+}
+
+.section-title {
+    color: #009c9a;
+    font-size: 26px;
+    font-weight: 800;
+    margin-top: 20px;
+    margin-bottom: 16px;
+}
+
+.card {
+    background: white;
+    padding: 28px;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    margin-bottom: 26px;
+}
+
+.stButton > button {
+    background: linear-gradient(90deg, #00b894, #0984c6);
+    color: white;
+    border-radius: 12px;
+    border: none;
+    padding: 12px 30px;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+.stButton > button:hover {
+    background: linear-gradient(90deg, #0984c6, #00b894);
+    color: white;
+}
+
+[data-testid="stMetric"] {
+    background: #e9fbf7;
+    border-radius: 18px;
+    padding: 22px;
+    border: 1px solid #b8eee4;
+}
+
+.success-box {
+    background: #e9fbf1;
+    padding: 22px;
+    border-radius: 18px;
+    border-left: 6px solid #00b894;
+    color: #116149;
+}
+
+.warning-box {
+    background: #fff6e6;
+    padding: 22px;
+    border-radius: 18px;
+    border-left: 6px solid #f5a623;
+    color: #6b4a00;
+}
+
+.danger-box {
+    background: #ffecec;
+    padding: 22px;
+    border-radius: 18px;
+    border-left: 6px solid #ff4d4f;
+    color: #7a1f1f;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ===============================
 # LOAD MODEL
 # ===============================
 model = joblib.load("xgboost_model.pkl")
@@ -26,14 +128,28 @@ def signed_log(x):
     return np.sign(x) * np.log1p(abs(x))
 
 # ===============================
-# ATECO MAP (FINAL)
+# MAPS
 # ===============================
 ateco_map = {
+    "01-03: Agriculture, Forestry, Fishing": 4,
+    "05-09: Mining and Quarrying": 4,
     "10-33: Manufacturing": 2,
+    "35: Electricity, Gas, Steam": 4,
+    "36-39: Water Supply, Sewerage, Waste": 4,
     "41-43: Construction": 0,
     "45-47: Wholesale and Retail Trade": 3,
+    "49-53: Transportation and Storage": 4,
+    "55-56: Accommodation and Food Service": 4,
     "58-63: Information and Communication": 1,
-    "Other": 4
+    "64-66: Financial and Insurance Activities": 4,
+    "68: Real Estate Activities": 4,
+    "69-75: Professional, Scientific, Technical Activities": 4,
+    "77-82: Administrative and Support Services": 4,
+    "84: Public Administration": 4,
+    "85: Education": 4,
+    "86-88: Human Health and Social Work": 4,
+    "90-93: Arts, Entertainment, Recreation": 4,
+    "94-96: Other Service Activities": 4
 }
 
 legal_form_map = {
@@ -71,48 +187,68 @@ region_map = {
 }
 
 # ===============================
-# UI
+# HEADER
 # ===============================
-st.title("Financial Health Prediction System")
+col_logo, col_header = st.columns([1, 5])
 
-st.subheader("Company Context")
+with col_logo:
+    st.image("expertai_logo.png", width=180)
 
-ateco_sector = st.selectbox("ATECO Sector", list(ateco_map.keys()))
-legal_form = st.selectbox("Legal Form", list(legal_form_map.keys()))
-region = st.selectbox("Region", list(region_map.keys()))
+with col_header:
+    st.markdown("""
+    <div class="main-title">
+        <h1>Financial Health Prediction System</h1>
+        <p>Predict company financial health and generate strategic recommendations.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-st.subheader("Enter Financial Data (Last 3 Years)")
+# ===============================
+# COMPANY CONTEXT
+# ===============================
+st.markdown('<div class="section-title">Company Context</div>', unsafe_allow_html=True)
 
-# YEAR 1
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    ateco_sector = st.selectbox("ATECO Sector", list(ateco_map.keys()))
+
+with col2:
+    legal_form = st.selectbox("Legal Form", list(legal_form_map.keys()))
+
+with col3:
+    region = st.selectbox("Region", list(region_map.keys()))
+
+# ===============================
+# INPUT DATA
+# ===============================
+st.markdown('<div class="section-title">Enter Financial Data for the Last 3 Years</div>', unsafe_allow_html=True)
+
 st.markdown("### Year 1")
 col1, col2, col3, col4 = st.columns(4)
-net_profit_1 = col1.text_input("Net Profit (€)", "")
-total_debt_1 = col2.text_input("Total Debt (€)", "")
-current_assets_1 = col3.text_input("Current Assets (€)", "")
-short_debt_1 = col4.text_input("Short-term Debt (€)", "")
+net_profit_1 = col1.text_input("Year 1 - Net Profit / Loss (€)", "")
+total_debt_1 = col2.text_input("Year 1 - Total Debt (€)", "")
+current_assets_1 = col3.text_input("Year 1 - Current Assets (€)", "")
+short_debt_1 = col4.text_input("Year 1 - Short-term Debt (€)", "")
 
-# YEAR 2
 st.markdown("### Year 2")
 col1, col2, col3, col4 = st.columns(4)
-net_profit_2 = col1.text_input("Net Profit (€) ", "")
-total_debt_2 = col2.text_input("Total Debt (€) ", "")
-current_assets_2 = col3.text_input("Current Assets (€) ", "")
-short_debt_2 = col4.text_input("Short-term Debt (€) ", "")
+net_profit_2 = col1.text_input("Year 2 - Net Profit / Loss (€)", "")
+total_debt_2 = col2.text_input("Year 2 - Total Debt (€)", "")
+current_assets_2 = col3.text_input("Year 2 - Current Assets (€)", "")
+short_debt_2 = col4.text_input("Year 2 - Short-term Debt (€)", "")
 
-# YEAR 3
 st.markdown("### Year 3")
 col1, col2, col3, col4 = st.columns(4)
-net_profit_3 = col1.text_input("Net Profit (€)  ", "")
-total_debt_3 = col2.text_input("Total Debt (€)  ", "")
-current_assets_3 = col3.text_input("Current Assets (€)  ", "")
-short_debt_3 = col4.text_input("Short-term Debt (€)  ", "")
+net_profit_3 = col1.text_input("Year 3 - Net Profit / Loss (€)", "")
+total_debt_3 = col2.text_input("Year 3 - Total Debt (€)", "")
+current_assets_3 = col3.text_input("Year 3 - Current Assets (€)", "")
+short_debt_3 = col4.text_input("Year 3 - Short-term Debt (€)", "")
 
 # ===============================
-# BUTTON
+# PREDICTION BUTTON
 # ===============================
 if st.button("Predict Classes and Next-Year Risk"):
 
-    # convert inputs
     net_profit_1 = to_float(net_profit_1)
     total_debt_1 = to_float(total_debt_1)
     current_assets_1 = to_float(current_assets_1)
@@ -128,12 +264,7 @@ if st.button("Predict Classes and Next-Year Risk"):
     current_assets_3 = to_float(current_assets_3)
     short_debt_3 = to_float(short_debt_3)
 
-    # ===============================
-    # FEATURE ENGINEERING
-    # ===============================
-    def build_features(net_profit, total_debt, current_assets, short_debt,
-                       prev_profit=None, prev_debt=None):
-
+    def build_features(net_profit, total_debt, current_assets, short_debt, prev_profit=None, prev_debt=None):
         working_capital = current_assets - short_debt
 
         delta_profit = 0 if prev_profit is None else (net_profit - prev_profit) / (abs(prev_profit) + 1)
@@ -150,14 +281,10 @@ if st.button("Predict Classes and Next-Year Risk"):
             region_map[region]
         ]
 
-    # year features
     f1 = build_features(net_profit_1, total_debt_1, current_assets_1, short_debt_1)
-    f2 = build_features(net_profit_2, total_debt_2, current_assets_2, short_debt_2,
-                        net_profit_1, total_debt_1)
-    f3 = build_features(net_profit_3, total_debt_3, current_assets_3, short_debt_3,
-                        net_profit_2, total_debt_2)
+    f2 = build_features(net_profit_2, total_debt_2, current_assets_2, short_debt_2, net_profit_1, total_debt_1)
+    f3 = build_features(net_profit_3, total_debt_3, current_assets_3, short_debt_3, net_profit_2, total_debt_2)
 
-    # feature names
     cols = [
         "log_net_profit",
         "log_total_debt",
@@ -171,22 +298,26 @@ if st.button("Predict Classes and Next-Year Risk"):
 
     df = pd.DataFrame([f1, f2, f3], columns=cols)
 
-    # ===============================
-    # PREDICTION
-    # ===============================
-    preds = model.predict(df)
+    preds_raw = model.predict(df)
 
-    class_map = {0: "A", 1: "B", 2: "C", 3: "D"}
-    preds = [class_map[p] for p in preds]
+    class_map = {
+        0: "A",
+        1: "B",
+        2: "C",
+        3: "D",
+        "A": "A",
+        "B": "B",
+        "C": "C",
+        "D": "D"
+    }
 
-    # ===============================
-    # OUTPUT
-    # ===============================
+    preds = [class_map.get(p, p) for p in preds_raw]
+
     result_df = pd.DataFrame({
         "Year": ["Year 1", "Year 2", "Year 3"],
-        "Net Profit": [net_profit_1, net_profit_2, net_profit_3],
-        "Total Debt": [total_debt_1, total_debt_2, total_debt_3],
-        "Working Capital": [
+        "Net Profit (€)": [net_profit_1, net_profit_2, net_profit_3],
+        "Total Debt (€)": [total_debt_1, total_debt_2, total_debt_3],
+        "Working Capital (€)": [
             current_assets_1 - short_debt_1,
             current_assets_2 - short_debt_2,
             current_assets_3 - short_debt_3
@@ -194,19 +325,13 @@ if st.button("Predict Classes and Next-Year Risk"):
         "Predicted Class": preds
     })
 
-    st.subheader("Predicted Classes")
-    st.dataframe(result_df)
+    st.markdown('<div class="section-title">Predicted Classes</div>', unsafe_allow_html=True)
+    st.dataframe(result_df, use_container_width=True)
 
-    # next year prediction = last year class
-    st.subheader("Estimated Next-Year Class")
-    st.success(f"Predicted Next Year: {preds[-1]}")
-
-    # ===============================
-    # SIMPLE RECOMMENDATION
-    # ===============================
-    st.subheader("Strategic Recommendations")
+    st.markdown('<div class="section-title">Estimated Next-Year Class</div>', unsafe_allow_html=True)
 
     last_class = preds[-1]
+    st.metric("Predicted Next Year", last_class)
 
     profit_change = net_profit_3 - net_profit_1
     debt_change = total_debt_3 - total_debt_1
@@ -214,45 +339,64 @@ if st.button("Predict Classes and Next-Year Risk"):
     wc_3 = current_assets_3 - short_debt_3
     wc_change = wc_3 - wc_1
 
+    st.markdown('<div class="section-title">Strategic Recommendations</div>', unsafe_allow_html=True)
+
     if last_class in ["A", "B"]:
-        st.success("✅ The company is financially stable, but it should maintain discipline to preserve or improve its class.")
+        st.markdown("""
+        <div class="success-box">
+        <b>Company is financially stable.</b><br>
+        The company should maintain discipline to preserve or improve its financial health.
+        </div>
+        """, unsafe_allow_html=True)
 
         st.write("""
-    **How to maintain or improve performance:**
-    - Keep debt growth under control and avoid unnecessary borrowing.
-    - Maintain positive profitability by protecting margins and controlling operating costs.
-    - Preserve strong working capital by improving cash collection and managing short-term liabilities.
-    - Monitor profitability, debt, and liquidity every quarter to detect early warning signals.
-    """)
+        **How to maintain or improve performance:**
+        - Keep debt growth under control and avoid unnecessary borrowing.
+        - Maintain profitability by controlling costs and protecting margins.
+        - Preserve strong working capital by improving cash collection and managing short-term liabilities.
+        - Monitor key financial indicators every quarter.
+        """)
 
-    if debt_change > 0:
-        st.info("Debt has increased over the three-year period. Even though the company is currently stable, rising debt should be monitored carefully.")
+        if debt_change > 0:
+            st.info("Debt has increased over the three-year period. Rising debt should be monitored carefully.")
 
-    if profit_change < 0:
-        st.info("Profitability has weakened over the three-year period. The company should focus on margin improvement and cost control.")
+        if profit_change < 0:
+            st.info("Profitability has weakened over the three-year period. The company should focus on margin improvement.")
 
-    if wc_change < 0:
-        st.info("Working capital has decreased. The company should strengthen liquidity to avoid future downgrades.")
+        if wc_change < 0:
+            st.info("Working capital has decreased. The company should strengthen liquidity to avoid future downgrades.")
 
     elif last_class == "C":
-        st.warning("⚠️ The company shows moderate financial risk. It should act before the situation deteriorates further.")
+        st.markdown("""
+        <div class="warning-box">
+        <b>Moderate financial risk detected.</b><br>
+        The company should act before the situation deteriorates further.
+        </div>
+        """, unsafe_allow_html=True)
 
         st.write("""
-    **How to improve performance:**
-    - Reduce leverage by limiting new debt and prioritising repayment of short-term obligations.
-    - Improve profitability through cost reduction, pricing strategy, and more efficient operations.
-    - Strengthen working capital by accelerating receivables collection and controlling inventories.
-    - Build a recovery plan with clear financial targets for the next year.
-    """)
+        **How to improve performance:**
+        - Reduce leverage by limiting new debt.
+        - Prioritise repayment of short-term obligations.
+        - Improve profitability through cost reduction and more efficient operations.
+        - Strengthen working capital by accelerating receivables collection.
+        - Create a recovery plan with clear financial targets for the next year.
+        """)
 
     elif last_class == "D":
-        st.error("🚨 The company is predicted as financially distressed. Immediate corrective action is recommended.")
+        st.markdown("""
+        <div class="danger-box">
+        <b>High financial distress risk detected.</b><br>
+        Immediate corrective action is recommended.
+        </div>
+        """, unsafe_allow_html=True)
 
         st.write("""
-    **Urgent actions to improve performance:**
-    - Restructure or renegotiate debt to reduce short-term pressure.
-    - Restore profitability by cutting non-essential costs and focusing on profitable activities.
-    - Improve liquidity by increasing cash reserves and reducing short-term liabilities.
-    - Consider capital injection, asset sales, or operational restructuring if financial pressure continues.
-    - Monitor the company monthly rather than yearly until risk indicators improve.
-    """)
+        **Urgent actions to improve performance:**
+        - Restructure or renegotiate debt to reduce short-term pressure.
+        - Restore profitability by cutting non-essential costs.
+        - Focus on profitable business lines and reduce loss-making activities.
+        - Improve liquidity by increasing cash reserves and reducing short-term liabilities.
+        - Consider capital injection, asset sales, or operational restructuring.
+        - Monitor the company monthly until risk indicators improve.
+        """)
