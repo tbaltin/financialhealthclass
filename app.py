@@ -36,8 +36,39 @@ ateco_map = {
     "Other": 4
 }
 
-legal_form_map = {"SRL": 0, "SPA": 1, "Other": 2}
-region_map = {"Lazio": 0, "Lombardy": 1, "Other": 2}
+legal_form_map = {
+    "SRL": 0,
+    "SPA": 1,
+    "SNC": 2,
+    "SAS": 2,
+    "Individual Company": 2,
+    "Cooperative": 2,
+    "Other": 2
+}
+
+region_map = {
+    "Abruzzo": 2,
+    "Basilicata": 2,
+    "Calabria": 2,
+    "Campania": 2,
+    "Emilia-Romagna": 2,
+    "Friuli-Venezia Giulia": 2,
+    "Lazio": 0,
+    "Liguria": 2,
+    "Lombardy": 1,
+    "Marche": 2,
+    "Molise": 2,
+    "Piedmont": 2,
+    "Apulia": 2,
+    "Sardinia": 2,
+    "Sicily": 2,
+    "Tuscany": 2,
+    "Trentino-Alto Adige": 2,
+    "Umbria": 2,
+    "Aosta Valley": 2,
+    "Veneto": 2,
+    "Other": 2
+}
 
 # ===============================
 # UI
