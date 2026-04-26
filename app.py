@@ -7,37 +7,52 @@ st.set_page_config(page_title="Financial Health Predictor", layout="wide")
 
 st.markdown("""
 <style>
-:root { color-scheme: light; }
 
-.stApp {
-    background: linear-gradient(135deg, #f7fbfc 0%, #eef7f8 45%, #ffffff 100%);
-    color: #1f2933 !important;
+/* LIGHT + DARK UYUMLU */
+:root {
+    --text-color: #1f2933;
+    --card-bg: white;
 }
 
-html, body, [class*="css"], label, p, span, div {
-    color: #1f2933 !important;
+/* Dark mode override */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-color: #f1f5f9;
+        --card-bg: #1e293b;
+    }
 }
 
+/* Genel */
+html, body, [class*="css"] {
+    color: var(--text-color) !important;
+}
+
+/* Title */
 .main-title {
     background: linear-gradient(90deg, #23c7b7, #0c8fd3);
     padding: 32px;
     border-radius: 20px;
-    color: white !important;
     margin-bottom: 30px;
-}
-
-.main-title h1, .main-title p {
     color: white !important;
 }
 
+/* Section başlıkları */
 .section-title {
-    color: #009c9a !important;
-    font-size: 25px;
+    font-size: 24px;
     font-weight: 800;
-    margin-top: 22px;
-    margin-bottom: 14px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: var(--text-color) !important;
 }
 
+/* Kartlar */
+.card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 16px;
+}
+
+/* Button */
 .stButton > button {
     background: linear-gradient(90deg, #00b894, #0984c6);
     color: white !important;
@@ -45,6 +60,7 @@ html, body, [class*="css"], label, p, span, div {
     font-weight: 700;
 }
 
+/* Success */
 .success-box {
     background: #e9fbf1;
     padding: 20px;
@@ -52,6 +68,7 @@ html, body, [class*="css"], label, p, span, div {
     border-left: 6px solid #00b894;
 }
 
+/* Warning */
 .warning-box {
     background: #fff6e6;
     padding: 20px;
@@ -59,12 +76,28 @@ html, body, [class*="css"], label, p, span, div {
     border-left: 6px solid #f5a623;
 }
 
+/* Danger */
 .danger-box {
     background: #ffecec;
     padding: 20px;
     border-radius: 12px;
     border-left: 6px solid #ff4d4f;
 }
+
+/* 🔴 GitHub / toolbar gizleme */
+[data-testid="stToolbar"] {
+    visibility: hidden;
+    height: 0%;
+}
+
+[data-testid="stDecoration"] {
+    display: none;
+}
+
+[data-testid="stStatusWidget"] {
+    display: none;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
