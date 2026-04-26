@@ -7,73 +7,13 @@ st.set_page_config(page_title="Financial Health Predictor", layout="wide")
 
 st.markdown("""
 <style>
+
+/* Background */
 .stApp {
     background: linear-gradient(135deg, #f7fbfc 0%, #eef7f8 50%, #ffffff 100%);
-h1, h2, h3, h4, h5, h6,
-label,
-p,
-span,
-div,
-[data-testid="stMarkdownContainer"] {
-    color: #1f2933 !important;
-}
-}
-.main-title {
-    background: linear-gradient(90deg, #23c7b7, #0c8fd3);
-    padding: 32px;
-    border-radius: 20px;
-    margin-bottom: 30px;
 }
 
-.main-title h1,
-.main-title p {
-    color: white !important;
-
-}
-
-/* Keep header text white */
-.main-title h1 {
-    color: #1f2933 !important;
-}
-
-.main-title p {
-    color: #eaf6f8 !important;
-    font-weight: 500;
-    opacity: 1;
-}
-
-/* Section titles */
-.section-title {
-    color: #009c9a !important;
-}
-
-/* Input box text */
-input {
-    color: #ffffff !important;
-/* Selectbox visible text fix */
-div[data-baseweb="select"] span {
-    color: #ffffff !important;
-}
-
-/* Dropdown option text fix */
-div[role="listbox"] span {
-    color: #ffffff !important;
-}
-
-/* Dropdown arrow */
-div[data-baseweb="select"] svg {
-    color: #ffffff !important;
-    fill: #ffffff !important;
-}
-
-/* Input labels specifically */
-[data-testid="stWidgetLabel"] label,
-[data-testid="stWidgetLabel"] p {
-    color: #1f2933 !important;
-    font-weight: 600 !important;
-}
-
-/* Main header */
+/* Header */
 .main-title {
     background: linear-gradient(90deg, #23c7b7, #0c8fd3);
     padding: 32px;
@@ -95,7 +35,32 @@ div[data-baseweb="select"] svg {
     margin-bottom: 14px;
 }
 
-/* Button */
+/* Labels (Light mode) */
+[data-testid="stWidgetLabel"] label,
+[data-testid="stWidgetLabel"] p {
+    color: #1f2933 !important;
+    font-weight: 600 !important;
+}
+
+/* Labels (Dark mode) */
+@media (prefers-color-scheme: dark) {
+    [data-testid="stWidgetLabel"] label,
+    [data-testid="stWidgetLabel"] p {
+        color: white !important;
+    }
+}
+
+/* Selectbox text */
+div[data-baseweb="select"] span {
+    color: white !important;
+}
+
+/* Dropdown options */
+div[role="listbox"] span {
+    color: white !important;
+}
+
+/* Buttons */
 .stButton > button {
     background: linear-gradient(90deg, #00b894, #0984c6);
     color: white !important;
@@ -103,7 +68,7 @@ div[data-baseweb="select"] svg {
     font-weight: 700;
 }
 
-/* Recommendation boxes with readable text */
+/* Recommendation boxes */
 .success-box {
     background: #e9fbf1;
     padding: 20px;
@@ -128,31 +93,18 @@ div[data-baseweb="select"] svg {
     color: #5c1717 !important;
 }
 
-.success-box * {
-    color: #12372a !important;
+.success-box *, .warning-box *, .danger-box * {
+    color: inherit !important;
 }
 
-.warning-box * {
-    color: #4a3200 !important;
+/* Hide Streamlit UI */
+[data-testid="stToolbar"],
+[data-testid="stStatusWidget"],
+[data-testid="stDecoration"],
+footer {
+    display: none !important;
 }
 
-.danger-box * {
-    color: #5c1717 !important;
-}
-
-/* Hide Streamlit toolbar */
-[data-testid="stToolbar"] {
-    visibility: hidden;
-    height: 0%;
-}
-
-[data-testid="stDecoration"] {
-    display: none;
-}
-
-[data-testid="stStatusWidget"] {
-    display: none;
-}
 </style>
 """, unsafe_allow_html=True)
 
