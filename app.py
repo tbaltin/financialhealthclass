@@ -9,33 +9,14 @@ st.markdown("""
 <style>
 .stApp {
     background: linear-gradient(135deg, #f7fbfc 0%, #eef7f8 50%, #ffffff 100%);
-/* Labels always visible */
-[data-testid="stWidgetLabel"] label,
-[data-testid="stWidgetLabel"] p {
-    color: #222 !important;
+h1, h2, h3, h4, h5, h6,
+label,
+p,
+span,
+div,
+[data-testid="stMarkdownContainer"] {
+    color: #1f2933 !important;
 }
-
-/* Dark mode fix */
-@media (prefers-color-scheme: dark) {
-    [data-testid="stWidgetLabel"] label,
-    [data-testid="stWidgetLabel"] p {
-        color: #ffffff !important;
-    }
-}
-
-/* Selectbox text */
-div[data-baseweb="select"] span {
-    color: #ffffff !important;
-}
-
-/* Dropdown options */
-div[role="listbox"] span {
-    color: #ffffff !important;
-}
-
-/* Titles */
-.section-title {
-    color: #009c9a !important;
 }
 .main-title {
     background: linear-gradient(90deg, #23c7b7, #0c8fd3);
