@@ -33,6 +33,20 @@ div,
 /* Input box text */
 input {
     color: #ffffff !important;
+/* Selectbox visible text fix */
+div[data-baseweb="select"] span {
+    color: #ffffff !important;
+}
+
+/* Dropdown option text fix */
+div[role="listbox"] span {
+    color: #ffffff !important;
+}
+
+/* Dropdown arrow */
+div[data-baseweb="select"] svg {
+    color: #ffffff !important;
+    fill: #ffffff !important;
 }
 
 /* Input labels specifically */
