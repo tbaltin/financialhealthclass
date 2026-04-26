@@ -7,49 +7,30 @@ st.set_page_config(page_title="Financial Health Predictor", layout="wide")
 
 st.markdown("""
 <style>
-
-/* LIGHT + DARK UYUMLU */
-:root {
-    --text-color: #1f2933;
-    --card-bg: white;
+.stApp {
+    background: linear-gradient(135deg, #f7fbfc 0%, #eef7f8 50%, #ffffff 100%);
 }
 
-/* Dark mode override */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --text-color: #f1f5f9;
-        --card-bg: #1e293b;
-    }
-}
-
-/* Genel */
-html, body, [class*="css"] {
-    color: var(--text-color) !important;
-}
-
-/* Title */
+/* Main header */
 .main-title {
     background: linear-gradient(90deg, #23c7b7, #0c8fd3);
     padding: 32px;
     border-radius: 20px;
     margin-bottom: 30px;
+}
+
+.main-title h1,
+.main-title p {
     color: white !important;
 }
 
-/* Section başlıkları */
+/* Section titles */
 .section-title {
-    font-size: 24px;
+    color: #009c9a !important;
+    font-size: 25px;
     font-weight: 800;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    color: var(--text-color) !important;
-}
-
-/* Kartlar */
-.card {
-    background: var(--card-bg);
-    padding: 20px;
-    border-radius: 16px;
+    margin-top: 22px;
+    margin-bottom: 14px;
 }
 
 /* Button */
@@ -60,31 +41,44 @@ html, body, [class*="css"] {
     font-weight: 700;
 }
 
-/* Success */
+/* Recommendation boxes with readable text */
 .success-box {
     background: #e9fbf1;
     padding: 20px;
     border-radius: 12px;
     border-left: 6px solid #00b894;
+    color: #12372a !important;
 }
 
-/* Warning */
 .warning-box {
     background: #fff6e6;
     padding: 20px;
     border-radius: 12px;
     border-left: 6px solid #f5a623;
+    color: #4a3200 !important;
 }
 
-/* Danger */
 .danger-box {
     background: #ffecec;
     padding: 20px;
     border-radius: 12px;
     border-left: 6px solid #ff4d4f;
+    color: #5c1717 !important;
 }
 
-/* 🔴 GitHub / toolbar gizleme */
+.success-box * {
+    color: #12372a !important;
+}
+
+.warning-box * {
+    color: #4a3200 !important;
+}
+
+.danger-box * {
+    color: #5c1717 !important;
+}
+
+/* Hide Streamlit toolbar */
 [data-testid="stToolbar"] {
     visibility: hidden;
     height: 0%;
@@ -97,17 +91,17 @@ html, body, [class*="css"] {
 [data-testid="stStatusWidget"] {
     display: none;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
-bundle = joblib.load("xgb_pipeline_bundle.pkl")
+# ===============================
+# LOAD OLD MODEL
+# ===============================
+model = joblib.load("xgboost_model.pkl")
 
-model = bundle["model"]
-scaler = bundle["scaler"]
-feature_columns = bundle["feature_columns"]
-class_map = bundle["class_map"]
-
+# ===============================
+# HELPERS
+# ===============================
 def to_float(x):
     try:
         x = str(x).replace("−", "-").replace(",", "").replace("€", "").strip()
@@ -118,11 +112,14 @@ def to_float(x):
 def signed_log(x):
     return np.sign(x) * np.log1p(abs(x))
 
+# ===============================
+# MAPS
+# ===============================
 ateco_map = {
-    "10-33: Manufacturing": 2,
-    "41-43: Construction": 0,
-    "45-47: Wholesale and Retail Trade": 3,
-    "58-63: Information and Communication": 1,
+    "43 — Specialised Construction": 0,
+    "46 — Wholesale Trade": 3,
+    "47 — Retail Trade": 3,
+    "IT / Information Services": 1,
     "Other": 4
 }
 
@@ -137,29 +134,32 @@ legal_map = {
 }
 
 region_map = {
+    "Lazio": 0,
+    "Lombardy": 1,
     "Abruzzo": 2,
+    "Aosta Valley": 2,
+    "Apulia": 2,
     "Basilicata": 2,
     "Calabria": 2,
     "Campania": 2,
     "Emilia-Romagna": 2,
     "Friuli-Venezia Giulia": 2,
-    "Lazio": 0,
     "Liguria": 2,
-    "Lombardy": 1,
     "Marche": 2,
     "Molise": 2,
     "Piedmont": 2,
-    "Apulia": 2,
     "Sardinia": 2,
     "Sicily": 2,
-    "Tuscany": 2,
     "Trentino-Alto Adige": 2,
+    "Tuscany": 2,
     "Umbria": 2,
-    "Aosta Valley": 2,
     "Veneto": 2,
     "Other": 2
 }
 
+# ===============================
+# HEADER
+# ===============================
 st.markdown("""
 <div class="main-title">
     <h1>expert.ai Financial Health System</h1>
@@ -167,6 +167,9 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# ===============================
+# COMPANY CONTEXT
+# ===============================
 st.markdown('<div class="section-title">Company Context</div>', unsafe_allow_html=True)
 
 c1, c2, c3 = st.columns(3)
@@ -180,6 +183,9 @@ with c2:
 with c3:
     region = st.selectbox("Region", list(region_map.keys()))
 
+# ===============================
+# INPUTS
+# ===============================
 st.markdown('<div class="section-title">Financial Data for the Last 3 Years</div>', unsafe_allow_html=True)
 
 def year_inputs(year):
@@ -202,6 +208,9 @@ y1 = year_inputs("Year 1")
 y2 = year_inputs("Year 2")
 y3 = year_inputs("Year 3")
 
+# ===============================
+# FEATURE ENGINEERING FOR OLD MODEL
+# ===============================
 def build_features(current, previous=None):
     net_profit, total_debt, current_assets, short_debt = current
 
@@ -213,48 +222,54 @@ def build_features(current, previous=None):
     else:
         prev_profit, prev_debt, _, _ = previous
 
-        if prev_profit != 0:
-            delta_profit = (net_profit - prev_profit) / prev_profit
-        else:
-            delta_profit = 0
+        delta_profit = (net_profit - prev_profit) / (abs(prev_profit) + 1)
+        delta_debt = (total_debt - prev_debt) / (abs(prev_debt) + 1)
 
-        if prev_debt != 0:
-            delta_debt = (total_debt - prev_debt) / prev_debt
-        else:
-            delta_debt = 0
+    return [
+        signed_log(net_profit),
+        signed_log(total_debt),
+        working_capital,
+        delta_profit,
+        delta_debt,
+        ateco_map[ateco],
+        legal_map[legal],
+        region_map[region]
+    ]
 
-        delta_profit = np.clip(delta_profit, -5, 5)
-        delta_debt = np.clip(delta_debt, -5, 5)
-
-    feature_dict = {
-        "log_net_profit": signed_log(net_profit),
-        "log_total_debt": signed_log(total_debt),
-        "working_capital": working_capital,
-        "delta_profit": delta_profit,
-        "delta_debt": delta_debt,
-        "ateco_sector": ateco_map[ateco],
-        "legal_form": legal_map[legal],
-        "region": region_map[region]
-    }
-
-    return feature_dict
-
+# ===============================
+# PREDICTION
+# ===============================
 if st.button("Predict Classes and Next-Year Risk"):
+
+    feature_columns = [
+        "log_net_profit",
+        "log_total_debt",
+        "working_capital",
+        "delta_profit",
+        "delta_debt",
+        "ateco_sector",
+        "legal_form",
+        "region"
+    ]
 
     input_df = pd.DataFrame([
         build_features(y1),
         build_features(y2, y1),
         build_features(y3, y2)
-    ])
+    ], columns=feature_columns)
 
-    input_df = input_df.reindex(columns=feature_columns)
+    raw_preds = model.predict(input_df)
 
-    input_scaled = pd.DataFrame(
-        scaler.transform(input_df),
-        columns=feature_columns
-    )
-
-    raw_preds = model.predict(input_scaled)
+    class_map = {
+        0: "A",
+        1: "B",
+        2: "C",
+        3: "D",
+        "A": "A",
+        "B": "B",
+        "C": "C",
+        "D": "D"
+    }
 
     preds = [class_map.get(p, p) for p in raw_preds]
 
@@ -287,8 +302,8 @@ if st.button("Predict Classes and Next-Year Risk"):
     if final_class in ["A", "B"]:
         st.markdown("""
         <div class="success-box">
-        <b>The company appears financially stable.</b><br>
-        The priority is to maintain performance and avoid future deterioration.
+            <b>The company appears financially stable.</b><br>
+            The priority is to maintain performance and avoid future deterioration.
         </div>
         """, unsafe_allow_html=True)
 
@@ -312,8 +327,8 @@ if st.button("Predict Classes and Next-Year Risk"):
     elif final_class == "C":
         st.markdown("""
         <div class="warning-box">
-        <b>Moderate financial risk detected.</b><br>
-        The company should act before the situation deteriorates.
+            <b>Moderate financial risk detected.</b><br>
+            The company should act before the situation deteriorates.
         </div>
         """, unsafe_allow_html=True)
 
@@ -328,8 +343,8 @@ if st.button("Predict Classes and Next-Year Risk"):
     else:
         st.markdown("""
         <div class="danger-box">
-        <b>High financial distress risk detected.</b><br>
-        Immediate corrective action is recommended.
+            <b>High financial distress risk detected.</b><br>
+            Immediate corrective action is recommended.
         </div>
         """, unsafe_allow_html=True)
 
