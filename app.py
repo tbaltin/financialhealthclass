@@ -9,6 +9,37 @@ st.markdown("""
 <style>
 .stApp {
     background: linear-gradient(135deg, #f7fbfc 0%, #eef7f8 50%, #ffffff 100%);
+/* Force visibility for headings and input labels */
+h1, h2, h3, h4, h5, h6,
+label,
+p,
+span,
+div,
+[data-testid="stMarkdownContainer"] {
+    color: #1f2933 !important;
+}
+
+/* Keep header text white */
+.main-title h1,
+.main-title p {
+    color: white !important;
+}
+
+/* Section titles */
+.section-title {
+    color: #009c9a !important;
+}
+
+/* Input box text */
+input {
+    color: #ffffff !important;
+}
+
+/* Input labels specifically */
+[data-testid="stWidgetLabel"] label,
+[data-testid="stWidgetLabel"] p {
+    color: #1f2933 !important;
+    font-weight: 600 !important;
 }
 
 /* Main header */
