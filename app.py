@@ -93,7 +93,7 @@ ateco_map = {
     "Other": 4
 }
 
-legal_form_map = {
+legal_map = {
     "SRL": 0,
     "SPA": 1,
     "SNC": 2,
