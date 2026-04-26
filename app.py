@@ -20,9 +20,14 @@ div,
 }
 
 /* Keep header text white */
-.main-title h1,
+.main-title h1 {
+    color: #1f2933 !important;
+}
+
 .main-title p {
-    color: white !important;
+    color: #eaf6f8 !important;
+    font-weight: 500;
+    opacity: 1;
 }
 
 /* Section titles */
