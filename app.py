@@ -35,6 +35,23 @@ st.markdown("""
     margin-bottom: 14px;
 }
 
+/* Force all labels to be dark */
+label {
+    color: #1f2933 !important;
+}
+
+/* Streamlit specific labels */
+[data-testid="stWidgetLabel"] label,
+[data-testid="stWidgetLabel"] p {
+    color: #1f2933 !important;
+    font-weight: 600 !important;
+}
+
+/* Year titles (Year 1, Year 2, Year 3) */
+h3 {
+    color: #1f2933 !important;
+}
+
 /* Labels (Light mode) */
 [data-testid="stWidgetLabel"] label,
 [data-testid="stWidgetLabel"] p {
