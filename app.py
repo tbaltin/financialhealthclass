@@ -288,7 +288,29 @@ if st.button("Predict Classes and Next-Year Risk"):
     st.markdown('<div class="section-title">Model-Predicted Classes</div>', unsafe_allow_html=True)
     st.dataframe(result_df, use_container_width=True)
 
-    final_class = preds[-1]
+    # ===============================
+    # NEXT-YEAR PROJECION
+    # ===============================
+
+    next_net_profit = y3[0] + (y3[0] - y2[0])
+    next_total_debt = y3[1] + (y3[1] - y2[1])
+    next_current_assets = y3[2] + (y3[2] - y2[2])
+    next_short_debt = y3[3] + (y3[3] - y2[3])
+
+    next_year = (
+        next_net_profit,
+        next_total_debt,
+        next_current_assets,
+        next_short_debt
+    )
+
+    next_features = pd.DataFrame(
+        [build_features(next_year, y3)],
+        columns=feature_columns
+    )
+
+    next_raw_pred = model.predict(next_features)[0]
+    final_class = class_map.get(next_raw_pred, next_raw_pred)
 
     st.markdown('<div class="section-title">Estimated Next-Year Risk Class</div>', unsafe_allow_html=True)
     st.metric("Estimated Class Based on Recent Trend", final_class)
