@@ -7,13 +7,11 @@ st.set_page_config(page_title="Financial Health Predictor", layout="wide")
 
 st.markdown("""
 <style>
-
-/* Background */
 .stApp {
     background: linear-gradient(135deg, #f7fbfc 0%, #eef7f8 50%, #ffffff 100%);
 }
 
-/* Header */
+/* Main header */
 .main-title {
     background: linear-gradient(90deg, #23c7b7, #0c8fd3);
     padding: 32px;
@@ -26,6 +24,13 @@ st.markdown("""
     color: white !important;
 }
 
+/* General text */
+h1, h2, h3, h4, h5, h6,
+p, label,
+[data-testid="stMarkdownContainer"] {
+    color: #1f2933 !important;
+}
+
 /* Section titles */
 .section-title {
     color: #009c9a !important;
@@ -35,49 +40,48 @@ st.markdown("""
     margin-bottom: 14px;
 }
 
-/* Force all labels to be dark */
-label {
-    color: #1f2933 !important;
-}
-
-/* Streamlit specific labels */
+/* Text input labels */
 [data-testid="stWidgetLabel"] label,
 [data-testid="stWidgetLabel"] p {
     color: #1f2933 !important;
     font-weight: 600 !important;
 }
 
-/* Year titles (Year 1, Year 2, Year 3) */
-h3 {
+/* Text input boxes */
+input {
     color: #1f2933 !important;
+    background-color: #ffffff !important;
 }
 
-/* Labels (Light mode) */
-[data-testid="stWidgetLabel"] label,
-[data-testid="stWidgetLabel"] p {
-    color: #1f2933 !important;
-    font-weight: 600 !important;
-}
-
-/* Labels (Dark mode) */
-@media (prefers-color-scheme: dark) {
-    [data-testid="stWidgetLabel"] label,
-    [data-testid="stWidgetLabel"] p {
-        color: white !important;
-    }
-}
-
-/* Selectbox text */
+/* Selectbox closed value */
 div[data-baseweb="select"] span {
-    color: white !important;
+    color: #1f2933 !important;
 }
 
-/* Dropdown options */
-div[role="listbox"] span {
-    color: white !important;
+/* Selectbox background */
+div[data-baseweb="select"] > div {
+    background-color: #ffffff !important;
+    color: #1f2933 !important;
 }
 
-/* Buttons */
+/* Dropdown menu */
+div[role="listbox"] {
+    background-color: #ffffff !important;
+}
+
+/* Dropdown options text */
+div[role="listbox"] span,
+div[role="option"] span {
+    color: #1f2933 !important;
+}
+
+/* Dropdown arrow */
+div[data-baseweb="select"] svg {
+    color: #1f2933 !important;
+    fill: #1f2933 !important;
+}
+
+/* Button */
 .stButton > button {
     background: linear-gradient(90deg, #00b894, #0984c6);
     color: white !important;
@@ -110,18 +114,19 @@ div[role="listbox"] span {
     color: #5c1717 !important;
 }
 
-.success-box *, .warning-box *, .danger-box * {
+.success-box *, 
+.warning-box *, 
+.danger-box * {
     color: inherit !important;
 }
 
-/* Hide Streamlit UI */
+/* Hide Streamlit toolbar */
 [data-testid="stToolbar"],
-[data-testid="stStatusWidget"],
 [data-testid="stDecoration"],
+[data-testid="stStatusWidget"],
 footer {
     display: none !important;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
