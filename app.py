@@ -17,6 +17,17 @@ span,
 div,
 [data-testid="stMarkdownContainer"] {
     color: #1f2933 !important;
+.main-title {
+    background: linear-gradient(90deg, #23c7b7, #0c8fd3);
+    padding: 32px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+}
+
+.main-title h1,
+.main-title p {
+    color: white !important;
+
 }
 
 /* Keep header text white */
