@@ -86,26 +86,44 @@ def signed_log(x):
     return np.sign(x) * np.log1p(abs(x))
 
 ateco_map = {
-    "43 — Specialised Construction": 0,
-    "46 — Wholesale Trade": 3,
-    "47 — Retail Trade": 3,
-    "IT / Information Services": 1,
+    "10-33: Manufacturing": 2,
+    "41-43: Construction": 0,
+    "45-47: Wholesale and Retail Trade": 3,
+    "58-63: Information and Communication": 1,
     "Other": 4
 }
 
-legal_map = {
+legal_form_map = {
     "SRL": 0,
     "SPA": 1,
-    "SNC / SAS": 2,
+    "SNC": 2,
+    "SAS": 2,
     "Individual Company": 2,
+    "Cooperative": 2,
     "Other": 2
 }
 
 region_map = {
+    "Abruzzo": 2,
+    "Basilicata": 2,
+    "Calabria": 2,
+    "Campania": 2,
+    "Emilia-Romagna": 2,
+    "Friuli-Venezia Giulia": 2,
     "Lazio": 0,
+    "Liguria": 2,
     "Lombardy": 1,
-    "Northern Italy": 2,
-    "Central / Southern Italy": 2,
+    "Marche": 2,
+    "Molise": 2,
+    "Piedmont": 2,
+    "Apulia": 2,
+    "Sardinia": 2,
+    "Sicily": 2,
+    "Tuscany": 2,
+    "Trentino-Alto Adige": 2,
+    "Umbria": 2,
+    "Aosta Valley": 2,
+    "Veneto": 2,
     "Other": 2
 }
 
