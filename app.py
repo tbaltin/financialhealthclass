@@ -68,7 +68,12 @@ html, body, [class*="css"], label, p, span, div {
 </style>
 """, unsafe_allow_html=True)
 
-model = joblib.load("xgboost_model.pkl")
+bundle = joblib.load("xgb_pipeline_bundle.pkl")
+
+model = bundle["model"]
+scaler = bundle["scaler"]
+feature_columns = bundle["feature_columns"]
+class_map = bundle["class_map"]
 
 def to_float(x):
     try:
@@ -81,61 +86,26 @@ def signed_log(x):
     return np.sign(x) * np.log1p(abs(x))
 
 ateco_map = {
-    "01-03 Agriculture, Forestry, Fishing": 4,
-    "05-09 Mining and Quarrying": 4,
-    "10-33 Manufacturing": 2,
-    "35 Electricity, Gas, Steam": 4,
-    "36-39 Water Supply, Sewerage, Waste": 4,
-    "41-43 Construction": 0,
-    "45-47 Wholesale and Retail Trade": 3,
-    "49-53 Transportation and Storage": 4,
-    "55-56 Accommodation and Food Service": 4,
-    "58-63 Information and Communication": 1,
-    "64-66 Financial and Insurance Activities": 4,
-    "68 Real Estate Activities": 4,
-    "69-75 Professional, Scientific, Technical Activities": 4,
-    "77-82 Administrative and Support Services": 4,
-    "84 Public Administration": 4,
-    "85 Education": 4,
-    "86-88 Human Health and Social Work": 4,
-    "90-93 Arts, Entertainment, Recreation": 4,
-    "94-96 Other Service Activities": 4
+    "43 — Specialised Construction": 0,
+    "46 — Wholesale Trade": 3,
+    "47 — Retail Trade": 3,
+    "IT / Information Services": 1,
+    "Other": 4
 }
 
 legal_map = {
     "SRL": 0,
     "SPA": 1,
-    "SNC": 2,
-    "SAS": 2,
+    "SNC / SAS": 2,
     "Individual Company": 2,
-    "Cooperative": 2,
-    "Consortium": 2,
-    "Foundation": 2,
-    "Association": 2,
     "Other": 2
 }
 
 region_map = {
-    "Abruzzo": 2,
-    "Aosta Valley": 2,
-    "Apulia": 2,
-    "Basilicata": 2,
-    "Calabria": 2,
-    "Campania": 2,
-    "Emilia-Romagna": 2,
-    "Friuli-Venezia Giulia": 2,
     "Lazio": 0,
-    "Liguria": 2,
     "Lombardy": 1,
-    "Marche": 2,
-    "Molise": 2,
-    "Piedmont": 2,
-    "Sardinia": 2,
-    "Sicily": 2,
-    "Trentino-Alto Adige": 2,
-    "Tuscany": 2,
-    "Umbria": 2,
-    "Veneto": 2,
+    "Northern Italy": 2,
+    "Central / Southern Italy": 2,
     "Other": 2
 }
 
@@ -191,51 +161,49 @@ def build_features(current, previous=None):
         delta_debt = 0
     else:
         prev_profit, prev_debt, _, _ = previous
-        delta_profit = (net_profit - prev_profit) / (abs(prev_profit) + 1)
-        delta_debt = (total_debt - prev_debt) / (abs(prev_debt) + 1)
 
-    return [
-        signed_log(net_profit),
-        signed_log(total_debt),
-        working_capital,
-        delta_profit,
-        delta_debt,
-        ateco_map[ateco],
-        legal_map[legal],
-        region_map[region]
-    ]
+        if prev_profit != 0:
+            delta_profit = (net_profit - prev_profit) / prev_profit
+        else:
+            delta_profit = 0
+
+        if prev_debt != 0:
+            delta_debt = (total_debt - prev_debt) / prev_debt
+        else:
+            delta_debt = 0
+
+        delta_profit = np.clip(delta_profit, -5, 5)
+        delta_debt = np.clip(delta_debt, -5, 5)
+
+    feature_dict = {
+        "log_net_profit": signed_log(net_profit),
+        "log_total_debt": signed_log(total_debt),
+        "working_capital": working_capital,
+        "delta_profit": delta_profit,
+        "delta_debt": delta_debt,
+        "ateco_sector": ateco_map[ateco],
+        "legal_form": legal_map[legal],
+        "region": region_map[region]
+    }
+
+    return feature_dict
 
 if st.button("Predict Classes and Next-Year Risk"):
-
-    feature_columns = [
-        "log_net_profit",
-        "log_total_debt",
-        "working_capital",
-        "delta_profit",
-        "delta_debt",
-        "ateco_sector",
-        "legal_form",
-        "region"
-    ]
 
     input_df = pd.DataFrame([
         build_features(y1),
         build_features(y2, y1),
         build_features(y3, y2)
-    ], columns=feature_columns)
+    ])
 
-    raw_preds = model.predict(input_df)
+    input_df = input_df.reindex(columns=feature_columns)
 
-    class_map = {
-        0: "A",
-        1: "B",
-        2: "C",
-        3: "D",
-        "A": "A",
-        "B": "B",
-        "C": "C",
-        "D": "D"
-    }
+    input_scaled = pd.DataFrame(
+        scaler.transform(input_df),
+        columns=feature_columns
+    )
+
+    raw_preds = model.predict(input_scaled)
 
     preds = [class_map.get(p, p) for p in raw_preds]
 
@@ -248,10 +216,10 @@ if st.button("Predict Classes and Next-Year Risk"):
             y2[2] - y2[3],
             y3[2] - y3[3]
         ],
-        "Predicted Class": preds
+        "Model-Predicted Class": preds
     })
 
-    st.markdown('<div class="section-title">Results</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">Model-Predicted Classes</div>', unsafe_allow_html=True)
     st.dataframe(result_df, use_container_width=True)
 
     final_class = preds[-1]
